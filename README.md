@@ -8,12 +8,30 @@ Bárbara Parente de Carvalho Soares - 22402134
 -----------------------------------------------------------------------------------------------------------------------------------
 
 # Sistema de Agência de Viagens 
-1. Visão Geral
 
-O sistema tem como objetivo gerenciar o cadastro de clientes e pacotes de viagens
-em uma agência de turismo. Ele deve permitir a gestão de clientes nacionais(cpf) e
-estrangeiros(passaporte), bem como o cadastro de pacotes de viagens com diferentes
-características. Além disso, deve possibilitar o relacionamento entre clientes e
-pacotes de viagem, permitindo que um cliente contrate mais de um pacote.
-Outro aspecto controlado pelo sistema é a possibilidade de inclusão de serviços
-adicionais: translado, passeios, aluguel de veículos.
+## 📄 Descrição do Sistema
+
+Este sistema foi desenvolvido com o objetivo de gerenciar o cadastro de **clientes**, **pacotes de viagens** e **serviços adicionais** para uma agência de turismo.  
+
+A aplicação permite:
+- O cadastro de **clientes nacionais** (com CPF) e **clientes estrangeiros** (com passaporte), garantindo a validação dos documentos conforme a nacionalidade.
+- O registro de **pacotes de viagem** com destino, descrição, duração, preço e tipo (ex: nacional, internacional).
+- A associação entre clientes e pacotes, permitindo que um **cliente contrate mais de um pacote** de viagem, por meio de **pedidos** registrados no sistema.
+- A inclusão de **serviços adicionais** a cada pedido, como translado, passeios turísticos, aluguel de veículos, entre outros, com controle individual de valor e descrição.
+
+### 🔍 Funcionalidades implementadas:
+- Cadastro de clientes (nacionais e estrangeiros)
+- Cadastro de pacotes de viagem
+- Registro de pedidos (cliente + pacote)
+- Inclusão de serviços adicionais em pedidos
+- Relatórios:
+  - Pacotes contratados por cliente
+  - Clientes que contrataram determinado pacote
+
+### 🛠️ Tecnologias utilizadas:
+- Linguagem: Java
+- Banco de Dados: MySQL
+- Conexão: JDBC
+- Organização do código: DAO, Model, View (menus via terminal)
+
+
