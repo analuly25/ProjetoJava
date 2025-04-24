@@ -1,89 +1,39 @@
-CREATE DATABASE IF NOT EXISTS agencia_viagens;
 USE agencia_viagens;
 
--- Tabela de Clientes
-CREATE TABLE IF NOT EXISTS Clientes(
-   idClientes INT NOT NULL AUTO_INCREMENT,
-   nome VARCHAR(45) NOT NULL,
-   cpf  VARCHAR(14) NOT NULL,
-   passaporte VARCHAR(45) NOT NULL,
-   telefone  VARCHAR(45) NOT NULL,
-   email  VARCHAR(45) NOT NULL,
-   nacionalidade  ENUM('NACIONAL', 'ESTRANGEIRO') NOT NULL,
-   data_cadastro  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT chk_documento CHECK (
-        (nacionalidade = 'NACIONAL' AND cpf IS NOT NULL AND passaporte IS NULL) OR
-        (nacionalidade = 'ESTRANGEIRO' AND passaporte IS NOT NULL AND cpf IS NULL)
-    ),
-  PRIMARY KEY (`idClientes`),
-  UNIQUE INDEX `cpf_UNIQUE` (`cpf` ASC) VISIBLE,
-  UNIQUE INDEX `passaporte_UNIQUE` (`passaporte` ASC) VISIBLE);
- 
- ALTER TABLE Clientes 
-MODIFY cpf VARCHAR(14);
+INSERT INTO Clientes (nome, cpf, passaporte, telefone, email, nacionalidade) VALUES 
+('Carla Pereira', '056.659.547.99', NULL,'(11) 98109-5478', 'carla.1234@email.com','NACIONAL'),
+('André Ferreira', '651.021.585.17', NULL,'(61) 98433-9968', 'andre7891@gmail.com','NACIONAL'),
+('Rafael Zavistoski', NULL, 'US14725833', '(44) 78465-8841', 'rafael.3456@gmail.com','ESTRANGEIRO'),
+('Maria Clara Aragão', '057.322.175.09', NULL,'(14) 98541-6341', 'maria.clara45@gmail.com','NACIONAL');
 
-ALTER TABLE Clientes 
-MODIFY passaporte VARCHAR(45);
+INSERT INTO PacoteViagem (nome, destino, descricao, duracao_dias, preco, tipo) VALUES
+('Sol e Mar em Maceió', 'Maceió', 'Pacote com passeios pelas praias e piscinas naturais de Maceió.', 5, 1899.90, 'Nacional'),
+('Encantos da Serra Gaúcha', 'Gramado', 'Hospedagem charmosa com passeio de Maria Fumaça e tour de vinícolas.', 4, 2290.00, 'Nacional'),
+('Descubra Paris', 'Paris', 'Visita à Torre Eiffel, Museu do Louvre e cruzeiro pelo Rio Sena.', 7, 7999.90, 'Internacional'),
+('Aventura Andina', 'Cusco', 'Explore Machu Picchu e a cultura Inca com trilhas e guias locais.', 6, 4890.75, 'Internacional'),
+('Férias em Fernando de Noronha', 'Fernando de Noronha', 'Mergulho com tartarugas, praias paradisíacas e trilhas ecológicas.', 6, 5400.00, 'Nacional');
 
--- Tabela de Pacotes de Viagem
-CREATE TABLE IF NOT EXISTS PacoteViagem (
-   idPacoteViagem  INT AUTO_INCREMENT PRIMARY KEY,
-   nome  VARCHAR(45) NOT NULL,
-   destino  VARCHAR(45) NOT NULL,
-   descricao  TEXT NOT NULL,
-   duracao_dias  INT NOT NULL,
-   preco  DECIMAL(10,2) NOT NULL,
-   tipo  ENUM('Nacional', 'Internacional') NOT NULL,
-   
-  CONSTRAINT chk_preco_positivo CHECK (preco > 0));
-  
--- Tabela de Pedidos
-CREATE TABLE IF NOT EXISTS Pedido(
-  idPedido INT NOT NULL AUTO_INCREMENT,
-  idClientes INT NOT NULL,
-  idPacoteViagem INT NOT NULL,
-  data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  data_viagem DATE,
-  valor_total DECIMAL(10, 2) NOT NULL,
-  status ENUM('PENDENTE', 'CONFIRMADO', 'CANCELADO') DEFAULT 'PENDENTE',
-  PRIMARY KEY (`idPedido`),
-  FOREIGN KEY (idClientes) REFERENCES Clientes(idClientes) ON DELETE RESTRICT,
-  FOREIGN KEY (idPacoteViagem) REFERENCES PacoteViagem(idPacoteViagem) ON DELETE RESTRICT,
-    
-  CONSTRAINT chk_valor_total_positivo CHECK (valor_total > 0)
-);
+INSERT INTO ServicoAdicional (nome, descricao, preco) VALUES
+('Traslado Aeroporto-Hotel', 'Serviço de transporte entre o aeroporto e o hotel.', 180.00),
+('Passeio de Barco', 'Passeio turístico de barco pelo destino escolhido.', 250.00),
+('Guia Turístico', 'Acompanhamento de guia especializado durante os passeios.', 300.00),
+('Seguro Viagem', 'Cobertura para emergências médicas e extravio de bagagem.', 120.00),
+('Jantar Especial', 'Jantar em restaurante típico local incluso no pacote.', 200.00);
 
-ALTER TABLE Pedido
-MODIFY  valor_total DECIMAL(10, 2);
+INSERT INTO Pedido (idClientes, idPacoteViagem, data_viagem, valor_total, status) VALUES
+(1, 1, '2025-12-12', 1899.90, 'CONFIRMADO'),
+(2, 3, '2026-03-05', 7999.90, 'PENDENTE'),
+(3, 5, '2025-12-26', 5400.00, 'CONFIRMADO'),
+(4, 4, '2026-01-02', 4890.75, 'CONFIRMADO');
 
-ALTER TABLE Pedido
-MODIFY  valor_total DOUBLE;
 
--- Tabela de Serviços
-CREATE TABLE IF NOT EXISTS ServicoAdicional (
-  idServicoAdicional INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(45) NOT NULL,
-  descricao TEXT NOT NULL,
-  preco DECIMAL(10,2) NOT NULL,
-  CONSTRAINT chk_preco_servico_positivo CHECK (preco > 0),
-  PRIMARY KEY (`idServicoAdicional`));
+INSERT INTO PedidoServico (Pedido_idPedido, ServicoAdicional_idServicoAdicional, quantidade, preco_unitario) VALUES
+(5, 2, 1, 250.00),
+(5, 3, 1, 300.00),
+(7, 2, 2, 500.00),
+(6, 4, 3, 600.00),
+(5, 1, 2, 360.00),
+(7, 3, 1, 300.00),
+(8, 4, 2, 240.00),
+(8, 1, 2, 360.00);
 
--- Tabela de Pedido Serviço
-CREATE TABLE IF NOT EXISTS PedidoServico (
-  Pedido_idPedido INT NOT NULL,
-  ServicoAdicional_idServicoAdicional INT NOT NULL,
-  quantidade INT NOT NULL DEFAULT 1,
-  preco_unitario DECIMAL(10,2) NOT NULL,
- 
-  PRIMARY KEY (`Pedido_idPedido`, `ServicoAdicional_idServicoAdicional`),
-  FOREIGN KEY (Pedido_idPedido) REFERENCES Pedido(idPedido) ON DELETE CASCADE,
-  FOREIGN KEY (ServicoAdicional_idServicoAdicional) REFERENCES ServicoAdicional(idServicoAdicional) ON DELETE RESTRICT,
-  CONSTRAINT chk_quantidade_positiva CHECK (quantidade > 0),
-  CONSTRAINT chk_preco_unitario_positivo CHECK (preco_unitario > 0)
-);
-CREATE INDEX idx_clientes_nome ON Clientes(nome);
-CREATE INDEX idx_clientes_nacionalidade ON Clientes(nacionalidade);
-CREATE INDEX idx_pacote_destino ON PacoteViagem(destino);
-CREATE INDEX idx_pacote_tipo ON PacoteViagem(tipo);
-CREATE INDEX idx_pedido_cliente ON Pedido(idClientes);
-CREATE INDEX idx_pedido_data ON Pedido(data_viagem);
