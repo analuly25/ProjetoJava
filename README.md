@@ -50,8 +50,6 @@ cd ProjetoJava
 ```
 Onde colocar: No terminal da nova máquina, dentro da pasta onde você quer clonar o repositório.
 
-Depois de clonado, você pode abrir o projeto no IntelliJ e continuar o desenvolvimento.
-
 ### 3. Abrir no IntelliJ IDEA
 Abra o IntelliJ.
 
