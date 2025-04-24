@@ -38,36 +38,32 @@ public class MainGUI extends JFrame {
         setVisible(true);
     }
 
-    // Painel da aba Cliente
     private JPanel criarPainelCliente() {
         JPanel panel = new JPanel(new BorderLayout());
-        JPanel form = new JPanel(new GridLayout(5, 2));
 
-        // Campos do formulário de cliente
+        // Painel do formulário
+        JPanel form = new JPanel(new GridLayout(5, 2));
         JTextField nomeField = new JTextField();
         JTextField telefoneField = new JTextField();
         JTextField emailField = new JTextField();
         JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"NACIONAL", "ESTRANGEIRO"});
         JTextField docField = new JTextField();
 
-        // Adiciona os campos ao formulário
         form.add(new JLabel("Nome:")); form.add(nomeField);
         form.add(new JLabel("Telefone:")); form.add(telefoneField);
         form.add(new JLabel("Email:")); form.add(emailField);
         form.add(new JLabel("Tipo:")); form.add(tipoCombo);
         form.add(new JLabel("CPF/Passaporte:")); form.add(docField);
 
-        // Botão para salvar cliente
+        // Botão de salvar
         JButton salvarBtn = new JButton("Salvar Cliente");
         salvarBtn.addActionListener(e -> {
-            // Recupera dados dos campos
             String nome = nomeField.getText();
             String telefone = telefoneField.getText();
             String email = emailField.getText();
             String tipo = (String) tipoCombo.getSelectedItem();
             String doc = docField.getText();
 
-            // Cria cliente conforme o tipo
             Cliente cliente;
             if ("NACIONAL".equals(tipo)) {
                 cliente = new ClienteNacional(nome, telefone, email, doc);
@@ -75,26 +71,29 @@ public class MainGUI extends JFrame {
                 cliente = new ClienteEstrangeiro(nome, telefone, email, doc);
             }
 
+            clienteDao.inserir(cliente);
+            JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!");
         });
 
-        // Tabela para exibir os clientes
+        // Painel que agrupa formulário + botão
+        JPanel topoPanel = new JPanel(new BorderLayout());
+        topoPanel.add(form, BorderLayout.CENTER);
+
+        JPanel botoesPanel = new JPanel();
+        botoesPanel.add(salvarBtn);
+        topoPanel.add(botoesPanel, BorderLayout.SOUTH);
+
+        // Tabela de clientes
         JTable tabela = new JTable(new DefaultTableModel(new Object[]{"ID", "Nome", "Tipo"}, 0));
         JScrollPane scrollPane = new JScrollPane(tabela);
 
-        // Painel com os botões
-        JPanel botoesPanel = new JPanel();
-        botoesPanel.add(salvarBtn);
+        panel.add(topoPanel, BorderLayout.NORTH); // form + botão
+        panel.add(scrollPane, BorderLayout.CENTER); // tabela ocupa o centro
 
-
-        // Adiciona os componentes ao painel principal
-        panel.add(form, BorderLayout.NORTH);
-        panel.add(botoesPanel, BorderLayout.CENTER);
-        panel.add(scrollPane, BorderLayout.SOUTH);
-
-        tabelaClientes = tabela; // Guarda referência para atualizar depois
-
+        tabelaClientes = tabela;
         return panel;
     }
+
 
     // Painel da aba Pacote de Viagem
     private JPanel criarPainelPacote() {
@@ -132,10 +131,12 @@ public class MainGUI extends JFrame {
         panel.add(new JLabel("Duração:")); panel.add(duracaoField);
         panel.add(new JLabel("Preço:")); panel.add(precoField);
         panel.add(new JLabel("Tipo:")); panel.add(tipoCombo);
-        panel.add(salvarBtn);
+        panel.add(new JLabel()); // Espaço vazio para alinhar o botão
+        panel.add(salvarBtn);    // Botão agora aparece corretamente
 
         return panel;
     }
+
 
     // Painel da aba Pedido
     private JPanel criarPainelPedido() {
